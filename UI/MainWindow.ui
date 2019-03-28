@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindowTool</class>
+ <widget class="QMainWindow" name="MainWindowTool">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>733</width>
+    <height>381</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>1</number>
+    </property>
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QTabWidget" name="tabWidgetConfig">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Tab 1</string>
+       </attribute>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="formAlignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>PushButton</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="Servers">
+       <attribute name="title">
+        <string>Servers</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>1</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTableWidget" name="tableWidgetServers">
+          <column>
+           <property name="text">
+            <string>服务类型</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>服务名称</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>程序路径</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>工作目录</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>环境变量</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>服务参数</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>启动后延时</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>启动</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>自动启动</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>不重复启动</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
