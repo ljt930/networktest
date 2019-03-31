@@ -6,6 +6,7 @@
 # @File    : FormatParams.py
 # @Software: PyCharm
 
+import re
 
 
 Params = ""
@@ -51,11 +52,6 @@ class FormatParam():
         # self.nodesDict = {"serverone": self.argsDict, "servertow": self.argsDict2}
         self.nodesDict = {}
         pass
-    def setNodesDict(self,nodesDict):
-        self.nodesDict = nodesDict
-
-    def getParamStr(self):
-        return self.__FormatParamStr()
 
     def __FormatArgsStr(self, argsDict):
         if type(argsDict) is not dict:
@@ -65,6 +61,9 @@ class FormatParam():
         #print argStr
         return argStr
 
+    def __FormatNodeStr(self,node):
+        return "\\n\\t\\\"" + node +"\\\" : \\n\\t{" + self.__FormatArgsStr(self.nodesDict[node]) + "\\n\\t}"
+
     def __FormatNodeArgsStr(self):
         ###需要增加判断self.nodesDic
         if type(self.nodesDict) is not dict:
@@ -72,21 +71,39 @@ class FormatParam():
         nodes = self.nodesDict.keys()
 
         # nodeargsStr = ",".join( "\\n\\t\\\"" + node +"\\\" : \\n\\t{" + self.__FormatArgsStr(self.nodesDict[node]) + "\\n\\t}" for node in nodes)
-        nodeargsStr = ",".join(self.__FormatNodeStr(node) for node in nodes)
-        #print nodesStr
+        nodeargs = ",".join(self.__FormatNodeStr(node) for node in nodes)
+        nodeargsStr = "{" + nodeargs + "\\n}\\n\""
         return nodeargsStr
 
-    def __FormatNodeStr(self,node):
-        return "\\n\\t\\\"" + node +"\\\" : \\n\\t{" + self.__FormatArgsStr(self.nodesDict[node]) + "\\n\\t}"
+    def __FormatNodeArgsStrToRedis(self,nodeargs):
+        # 替换掉\n,\t
+        return re.sub(r'(\\n|\\t)*', '', nodeargs)
 
     def __FormatParamStr(self):
-        nodesStr = self.__FormatNodeArgsStr()
+        nodeargsStr = self.__FormatNodeArgsStr()
 
-        param = "\""+self.servername+"#NEXT#"+self.coding+"#NEXT#"+self.servername+"Service#NEXT#{"+nodesStr+"\\n}\\n\""
+        param = "\""+self.servername+"#NEXT#"+self.coding+"#NEXT#"+self.servername+"Service#NEXT#"+nodeargsStr
         return param
+
+    def setNodesDict(self,nodesDict):
+        self.nodesDict = nodesDict
+
+    def getParamStr(self):
+        return self.__FormatParamStr()
 
 if __name__ == '__main__':
     #nodesDict = {"serverone": "xxxxxxxxxxx", "servertow": "zzzzzzzzzzzzzz"}
+    # aa = "\\n}\\n\""
+    # print type(aa)
+    # opt = aa.replace("\\n","huiche")
+    # print opt
+
+
     fc = FormatParam()
     fc.setNodesDict(nodesDict)
-    print fc.getParamStr()
+    param = fc.getParamStr()
+    print param
+
+    # #替换掉\n,\t
+    # stropt = re.sub(r'(\\n|\\t)*','',param)
+    # print stropt
