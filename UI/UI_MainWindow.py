@@ -79,7 +79,7 @@ class Ui_MainWindowTool(object):
         MainWindowTool.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindowTool)
-        self.tabWidgetConfig.setCurrentIndex(0)
+        self.tabWidgetConfig.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindowTool)
 
     def retranslateUi(self, MainWindowTool):
@@ -99,12 +99,12 @@ class Ui_MainWindowTool(object):
         item = self.tableWidgetServers.horizontalHeaderItem(5)
         item.setText(_translate("MainWindowTool", "服务参数", None))
         item = self.tableWidgetServers.horizontalHeaderItem(6)
-        item.setText(_translate("MainWindowTool", "启动", None))
-        item = self.tableWidgetServers.horizontalHeaderItem(7)
-        item.setText(_translate("MainWindowTool", "自动启动", None))
-        item = self.tableWidgetServers.horizontalHeaderItem(8)
-        item.setText(_translate("MainWindowTool", "不重复启动", None))
-        item = self.tableWidgetServers.horizontalHeaderItem(9)
         item.setText(_translate("MainWindowTool", "启动后延时", None))
+        item = self.tableWidgetServers.horizontalHeaderItem(7)
+        item.setText(_translate("MainWindowTool", "启动", None))
+        item = self.tableWidgetServers.horizontalHeaderItem(8)
+        item.setText(_translate("MainWindowTool", "自动启动", None))
+        item = self.tableWidgetServers.horizontalHeaderItem(9)
+        item.setText(_translate("MainWindowTool", "不重复启动", None))
         self.tabWidgetConfig.setTabText(self.tabWidgetConfig.indexOf(self.Servers), _translate("MainWindowTool", "Servers", None))
 
