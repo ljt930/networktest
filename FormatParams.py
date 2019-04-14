@@ -37,9 +37,8 @@ RTDBServer = {"DBIP":"10.7.3.10",
 
 nodesDict = {"CommonConfig":CommonConfig,
              "RTDB":RTDB,
-             "RTDBServer":RTDBServer,
-             "text":"11111111111"}
-
+             "RTDBServer":RTDBServer}
+nodes = {"RTDBServer":nodesDict}
 
 class FormatParam():
     def __init__(self):
