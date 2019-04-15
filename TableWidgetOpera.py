@@ -45,7 +45,8 @@ class TableWidgetOpera(QtGui.QDialog):
         self.parent.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)  ######允许右键产生子菜单
 
     def initDialogCfg(self,servername,nodes={}):
-        servername = self.CDS.QString2PyString(servername).encode('utf-8')
+        if type(servername) != str:
+            servername = self.CDS.QString2PyString(servername).encode('utf-8')
         self.__showItemInTable(nodes, servername,True)
 
         # self.tableWidgetCfgNode.setItemSelected(self.tableWidgetCfgNode.item(0,0),True)

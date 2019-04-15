@@ -14,6 +14,8 @@ import FormatParams
 import TableWidgetOpera
 import ConfigFileParserOper
 
+import jsonParserOper
+
 # 修改默认编码为"utf-8"
 default_encoding = "utf-8"
 if (default_encoding != sys.getdefaultencoding()):
@@ -43,13 +45,61 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
         print pos
 
     def ServersTableInit(self):
-        row = self.rc.getServerSize()
-        self.rc.createopt()
+        listServerCfg = self.getServerCfgDict()
+        print "ServersTableInit:\n",listServerCfg
+        row = len(listServerCfg)
+        # row = self.rc.getServerSize()
+        # self.rc.createopt()
         # row = 0
         # self.tableWidgetServers.setColumnCount(11)
 
 
-        self.tableWidgetServers.setRowCount(int(row))
+        self.tableWidgetServers.setRowCount(row)
+        r = 0
+        for ServerCfg in listServerCfg :
+            if ServerCfg.has_key("title"):
+                self.ItemInTable(1, ServerCfg["title"],r) #服务名称
+            else:
+                return
+            if ServerCfg.has_key("serviceType"):
+                self.ItemInTable(0, ServerCfg["serviceType"], r)  # 服务类型
+            else:
+                self.ItemInTable(0, "", r)
+            if ServerCfg.has_key("path"):
+                self.ItemInTable(2, ServerCfg["path"], r)  # 服务路径
+            else:
+                self.ItemInTable(2, "", r)
+            if ServerCfg.has_key("workDir"):
+                self.ItemInTable(3, ServerCfg["workDir"], r)  # 工作目录
+            else:
+                self.ItemInTable(3, "", r)
+            if ServerCfg.has_key("environment"):
+                self.ItemInTable(4, ServerCfg["environment"], r)  # 环境变量
+            else:
+                self.ItemInTable(4, "", r)
+            if ServerCfg.has_key("josnStartParam"):
+                self.ItemInTable(5, ServerCfg["josnStartParam"], r)  # 参数
+            else:
+                self.ItemInTable(5, "", r)
+            if ServerCfg.has_key("StartedDelay"):
+                self.ItemInTable(6, ServerCfg["StartedDelay"], r)  # 启动延时
+            else:
+                self.ItemInTable(6, "", r)
+            if ServerCfg.has_key("isEnable"):
+                self.CheckBoxInTable(7,self.StrToBool(ServerCfg["isEnable"]),r) # 是否启用
+            else:
+                self.CheckBoxInTable(7,False,r)
+            if ServerCfg.has_key("AutoRestart"):
+                self.CheckBoxInTable(8,self.StrToBool(ServerCfg["AutoRestart"]),r) # 自动启动
+            else:
+                self.CheckBoxInTable(8, False, r)
+            if ServerCfg.has_key("OnlyOne"):
+                self.CheckBoxInTable(9, self.StrToBool(ServerCfg["OnlyOne"]), r)  # 不重复启动
+            else:
+                self.CheckBoxInTable(9, False, r)
+
+            r +=1
+
 
         # self.csbutton = QtGui.QPushButton()
         # self.tableWidgetServers.setCellWidget(0,5,self.csbutton)
@@ -57,19 +107,19 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
         #     self.ItemInTable(col)
         r = 0
         for key, values in self.rc.servers.items():
-            self.ItemInTable(0,values["title"],r) #服务类型
-            self.ItemInTable(1, values["title"],r) #服务名称
-            self.ItemInTable(2, values["command"],r) #服务路径
-            self.ItemInTable(3, values["workspace"],r) #工作目录
-            self.ItemInTable(4, values["environment"],r) #环境变量
-            self.ItemInTable(5,values["params"],r) #参数
-            self.ItemInTable(6,values["starteddelay"],r) #启动延时
+            self.ItemInTable(0,values["Title"],r) #服务类型
+            self.ItemInTable(1, values["Title"],r) #服务名称
+            self.ItemInTable(2, values["Command"],r) #服务路径
+            self.ItemInTable(3, values["Workspace"],r) #工作目录
+            self.ItemInTable(4, values["Environment"],r) #环境变量
+            self.ItemInTable(5,values["Params"],r) #参数
+            self.ItemInTable(6,values["StartedDelay"],r) #启动延时
             if values.has_key("Useable"):
                 self.CheckBoxInTable(7,self.StrToBool(values["Useable"]),r)
             else:
                 self.CheckBoxInTable(7,False,r)
-            self.CheckBoxInTable(8,self.StrToBool(values["autorestart"]),r)
-            self.CheckBoxInTable(9,self.StrToBool(values["onlyone"]),r)
+            self.CheckBoxInTable(8,self.StrToBool(values["AutoRestart"]),r)
+            self.CheckBoxInTable(9,self.StrToBool(values["OnlyOne"]),r)
 
             # for col in range(7, 10):
             #     self.CheckBoxInTable(col)
@@ -77,6 +127,8 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
 
     def StrToBool(self,str):
         if str.lower() == "true":
+            return True
+        elif str.lower() == "1":
             return True
         else:
             return False
@@ -107,8 +159,11 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
             isEnableChekBox.setChecked(isselect)
 
 
-        pass
-
+    def getServerCfgDict(self):
+        jo = jsonParserOper.jsonOper()
+        jdict = jo.getjsondict("server.json")
+        serverdict = jdict["records"]
+        return serverdict
     @QtCore.pyqtSlot(int,int)  # 需要使用装饰器@QtCore.pyqtSlot()，把函数声明为槽函数
     def __ServerArgsDialog(self,row,col):
         # 初始化显示控制台相关qdialog部件
@@ -119,6 +174,8 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
             dlgargs = DialogServerArgs()
             dlgargs.servername = self.tableWidgetServers.item(row,1).text()
             _TWOper = TableWidgetOpera.TableWidgetOpera(dlgargs)
+
+
             _TWOper.initDialogCfg(dlgargs.servername,FormatParams.nodes)
             dlgargs.setTWOper(_TWOper)
 
@@ -149,9 +206,13 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
         self.TWOper = TWOpe
 
 if __name__ == '__main__':
+    jo = jsonParserOper.jsonOper()
+    jdict = jo.getjsondict("test.json")
     app = QtGui.QApplication(sys.argv)
     window = MainWindowTool()
     TWOper = TableWidgetOpera.TableWidgetOpera(window, True)
     window.setTWOper(TWOper)
+    if jdict:
+        TWOper.initDialogCfg("localConfig", {"localConfig":jdict})
     window.show()
     sys.exit(app.exec_())
