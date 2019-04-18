@@ -12,6 +12,18 @@ class CharactersConversion():
         # print type(qStr)
         return unicode(qStr.toUtf8(), 'utf-8', 'ignore')
 
+    def StrToBool(self,str): #字符转bool
+        if str.lower() == "true":
+            return True
+        elif str == "1":
+            return True
+        else:
+            return False
+    def BoolToStr(self,bool):
+        if bool:
+            return "1"
+        else:
+            return "0"
 
 if __name__ == '__main__':
     b =False

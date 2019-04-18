@@ -1,0 +1,157 @@
+{
+	"CommonConfig" : 
+	{
+		"AutoCancelForceDWTimeout" : "1",
+		"AutoLogoutTimeout" : "0",
+		"DelayToSendRFID" : "3000",
+		"IsAllowRFIDRepeat" : "0",
+		"IsAutoSelectKey" : "0",
+		"IsCheckKeyOnSeat" : "1",
+		"IsContinueUseOnlineKey" : "1",
+		"IsDisplayColorTicketItem" : "1",
+		"IsLoginUserNotDisplay" : "0",
+		"IsUseAutoCheckNewVer" : "0",
+		"IsUseDptCreateGraphLable" : "0",
+		"IsUseJKProtocol" : "0",
+		"IsUseKuaZhanTicket" : "0",
+		"IsUseOrderCtrlTicket" : "0",
+		"IsUsePhoneAppMonitor" : "0",
+		"IsUsePwdCheckRule" : "0",
+		"IsUseTopoCheck" : "0",
+		"IsUseVisualizationOfImport" : "1",
+		"IsUseWFCheck" : "0",
+		"LocalPortForKeyServer" : "10001",
+		"MainVersion" : "1",
+		"PerformanceLevel" : "0",
+		"ProjectVersion" : "0",
+		"RunningPlatform" : "0",
+		"UseCommonOrInspectTerm" : "0",
+		"defStation" : "1"
+	},
+	"DKConfig" : 
+	{
+		"DKServerIP" : "127.0.0.1",
+		"DKServerPort" : "5544",
+		"DataCreateServerIP" : "",
+		"DataCreateServerPort" : "",
+		"FileTransServerIP" : "127.0.0.1",
+		"FileTransServerPort" : "6379",
+		"KeyServerIP" : "",
+		"KeyServerPort" : "",
+		"TicketServerIP" : "",
+		"TicketServerPort" : "",
+		"WFMainIP" : "",
+		"WFMainPort" : ""
+	},
+	"DataBase" : 
+	{
+		"DBType" : "0",
+		"DSN" : "",
+		"IP" : "139.198.122.61",
+		"JKDB" : "gzpw_utf8",
+		"Port" : "3310",
+		"UID" : "root",
+		"configDB" : "gzpw_utf8",
+		"driver" : "",
+		"histroyDB" : "gzpw_utf8",
+		"psw" : "A92364CBF6D4EA6B0A31CE4C3BDBE8BE"
+	},
+	"JKConfig" : 
+	{
+		"FileTransServerIP" : "139.198.122.61",
+		"FileTransServerPort" : "6379",
+		"JKServerIP" : "139.198.122.61",
+		"JKServerLocalPort" : "0",
+		"JKServerPort" : "5544",
+		"JKSubVersion" : "0",
+		"WFLocalPort" : "0",
+		"WFRemoteIP" : "139.198.122.61",
+		"WFRemotePort" : "5555"
+	},
+	"JKDataBase" : 
+	{
+		"DBType" : "0",
+		"DSN" : "",
+		"IP" : "139.198.122.61",
+		"JKDB" : "gzpw_utf8",
+		"Port" : "3310",
+		"UID" : "root",
+		"configDB" : "gzpw_utf8",
+		"driver" : "",
+		"histroyDB" : "gzpw_utf8",
+		"psw" : "A92364CBF6D4EA6B0A31CE4C3BDBE8BE"
+	},
+	"JKFocusStation" : 
+	{
+		"FocusStationCount" : "0"
+	},
+	"JXGK" : 
+	{
+		"StationNum" : "1",
+		"ip" : "127.0.0.1",
+		"port" : "6379"
+	},
+	"Metra" : 
+	{
+		"cardReaderBaurd" : "4800",
+		"cardReaderCom" : "COM3",
+		"dir" : "../DataPacket",
+		"enableTaskType" : "0",
+		"isEnDefineOfGarage" : "0"
+	},
+	"MiniPCKeySocketSerial" : 
+	{
+		"Baudrate" : "115200",
+		"ComName" : "/dev/ttymxc4",
+		"DataBits" : "8",
+		"DeviceDoubleNum" : "1",
+		"DeviceNum" : "0",
+		"IsGraphicModeIntelligentUnLock" : "1",
+		"Parity" : "0",
+		"SmsCenterNum" : "13800756500",
+		"SmsCom" : "/dev/ttymxc1",
+		"StationName" : "1",
+		"StopBits" : "0",
+		"Time" : "1",
+		"UnlockReplyType" : "0",
+		"UnlockRes" : "1",
+		"UnlockTimeout" : "3",
+		"UsrName" : "1"
+	},
+	"Other" : 
+	{
+		"AppTitle" : "\u5fae\u673a\u9632\u8bef\u95ed\u9501\u7cfb\u7edf",
+		"AutoCloseScreenTimeout" : "0",
+		"DownPicUrl" : "http://139.198.122.61:8083/GZPDIAPP",
+		"IsAllowRFIDRepeat" : "0",
+		"IsCheckLocalCoding" : "1",
+		"IsLoginUserNotDisplay" : "0",
+		"IsUseOrderCtrlTicket" : "0",
+		"IsUsePhoneAppMonitor" : "0",
+		"IsUsePwdCheckRule" : "0",
+		"NodeNumber" : "99",
+		"OrderCtrlOutTime" : "5000",
+		"UseCommonOrInspectTerm" : "0"
+	},
+	"ProjectVersionFlag" : 
+	{
+		"IsDisplayZGHLogo" : "0",
+		"IsEnableEntranceGuard" : "0",
+		"IsEnableIRNet" : "0",
+		"IsEnableRemoteAudit" : "1",
+		"IsEnableTrackServer" : "0",
+		"Metra_ProjectVer" : "0"
+	},
+	"RTDB" : 
+	{
+		"ip" : "127.0.0.1",
+		"localCoding" : "28D2440228C80000",
+		"localName" : "client",
+		"localType" : "client",
+		"port" : "6379"
+	},
+	"dataPacket" : 
+	{
+		"dir" : "../DataPacket"
+	}
+}

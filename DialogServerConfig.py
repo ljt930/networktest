@@ -228,6 +228,8 @@ class DialogServerArgs(QtGui.QDialog, Ui_DialogServerArgs):
 
     def setTWOper(self,TWOpe):
         self.TWOper = TWOpe
+    def delTWOper(self):
+        del self.TWOper
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

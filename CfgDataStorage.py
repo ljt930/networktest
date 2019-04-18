@@ -46,7 +46,7 @@ class CfgDataStorage(object):
     def createNodes(self, nodename, isupdata, arg):
         if isupdata :
             self.nodes[nodename] = arg
-            print self.nodes
+            # print self.nodes
             return 0
         if self.nodes.has_key(nodename):
             return -1

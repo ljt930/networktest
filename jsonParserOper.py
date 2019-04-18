@@ -22,6 +22,23 @@ class jsonOper():
             print e
             return 0
         return 1
+    def jsonloads(self,strdata):
+        return json.loads(strdata)
+    def jsondumps(self, dictdata, skipkeys=False, ensure_ascii=True, check_circular=True,
+        allow_nan=True, cls=None, indent=None, separators=None,
+        encoding='utf-8', default=None, sort_keys=False, **kw):
+
+        return json.dumps(dictdata, skipkeys, ensure_ascii, check_circular,
+        allow_nan, cls, indent, separators,
+        encoding, default, sort_keys, **kw)
+
+    def jsondump(self,obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
+        allow_nan=True, cls=None, indent=None, separators=None,
+        encoding='utf-8', default=None, sort_keys=False, **kw):
+
+        return json.dump(obj, fp, skipkeys, ensure_ascii, check_circular,
+        allow_nan, cls, indent, separators,
+        encoding, default, sort_keys, **kw)
 
     def getjsondict(self,filepath):
         if self.loadfile(filepath):
@@ -31,4 +48,6 @@ class jsonOper():
 
 if __name__ == '__main__':
     jo = jsonOper()
-    jo.getjsondict()
+    jo.getjsondict("jsonstrBaseStartupParam.json")
+    s = json.dumps(str({"WFServer":{"port":"5555"}}), indent=4)
+    print s

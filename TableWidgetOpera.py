@@ -8,7 +8,7 @@
 
 from PyQt4 import QtCore, QtGui
 import CfgDataStorage
-
+import json
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
@@ -19,15 +19,14 @@ except AttributeError:
 
 class TableWidgetOpera(QtGui.QDialog):
 
-    def __init__(self,parent,islocal=False):
+    def __init__(self,parent,islocal=False,topparent=None):
 
         # self = parent
         super(TableWidgetOpera, self).__init__()
         self.parent = parent
         if islocal:
-            self.tableWidgetCfgNode = parent.tableWidgetLocaleCfgNode
-            self.tableWidgetCfgArg = parent.tableWidgetLocaleCfgArg
-
+            self.tableWidgetCfgNode = topparent.tableWidgetLocaleCfgNode
+            self.tableWidgetCfgArg = topparent.tableWidgetLocaleCfgArg
         else:
             self.tableWidgetCfgNode = parent.tableWidgetCfgNode
             self.tableWidgetCfgArg = parent.tableWidgetCfgArg
@@ -44,9 +43,12 @@ class TableWidgetOpera(QtGui.QDialog):
 
         self.parent.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)  ######允许右键产生子菜单
 
+        self.tableWidgetCfgArg.verticalHeader().setHidden(True)
+
     def initDialogCfg(self,servername,nodes={}):
         if type(servername) != str:
             servername = self.CDS.QString2PyString(servername).encode('utf-8')
+
         self.__showItemInTable(nodes, servername,True)
 
         # self.tableWidgetCfgNode.setItemSelected(self.tableWidgetCfgNode.item(0,0),True)
@@ -81,11 +83,22 @@ class TableWidgetOpera(QtGui.QDialog):
         item = self.tableWidgetCfgArg.horizontalHeaderItem(1)
         item.setText(_translate("self", "参数名称", None))
 
-    def __showItemInTable(self,nodes,nodename,isNodeTable=False):
+    def __showItemInTable(self,nodedicts,nodename,isNodeTable=False):
         row = 0
-        for key, values in nodes[nodename].items():
+        # if type(nodes[nodename]) != dict:
+        #     nodecfg = self.CDS.QString2PyString(nodes[nodename]).encode('utf-8')
+        #     nodecfg = json.loads(nodecfg)
+        #     print nodecfg
+        # else:
+        #     nodecfg = nodes[nodename]
+        parmdict = nodedicts[nodename]
+        keys = parmdict.items()
+        keys.sort()
+
+        for key ,values in keys:
             # print key," : ",values
             if isNodeTable:
+
                 widget = self.tableWidgetCfgNode
                 self.CDS.createNodes(key, True, values)
             else:
@@ -180,7 +193,7 @@ class TableWidgetOpera(QtGui.QDialog):
             return
         nodes = self.CDS.getNodes()
         if nodes.has_key(nodename):
-            print nodes[nodename]
+            # print nodes[nodename]
             self.__showItemInTable(nodes,nodename)
 
         else:

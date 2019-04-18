@@ -114,16 +114,30 @@ class WriteConfig():
         self.filePath = "test.ini"
         self.config = myConfigParser()
 
-        try:
-            self.config.add_section("Home")
-            self.config.set("Home", "IP", "10.15.40.123")
-            self.config.set("Home", "Mask", "255.255.255.0")
-            self.config.set("Home", "Gateway", "10.15.40.1")
-            self.config.set("Home", "DNS", "211.82.96.1")
-        except ConfigParser.DuplicateSectionError:
-            print("Section 'Home' already exists")
+        # try:
+        #     self.config.add_section("Home")
+        #     self.config.set("Home", "IP", "10.15.40.123")
+        #     self.config.set("Home", "Mask", "255.255.255.0")
+        #     self.config.set("Home", "Gateway", "10.15.40.1")
+        #     self.config.set("Home", "DNS", "211.82.96.1")
+        # except ConfigParser.DuplicateSectionError:
+        #     print("Section 'Home' already exists")
+        #
+        # self.config.write(open(self.filePath,"w"))
 
-        self.config.write(open(self.filePath,"w"))
+    def add_section(self, section):
+        self.config.add_section(section)
+
+    def set(self,section, opt, value):
+        try:
+            self.config.set(section, opt,value)
+        except :
+            print("Section '%s' already exists") % (section)
+        pass
+
+    def writetoFile(self,file):
+        fp = open(file,"w")
+        self.config.write(fp)
 
 if __name__ == '__main__':
     # rc = ReadConfig()
