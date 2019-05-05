@@ -222,7 +222,7 @@ class DialogServerArgs(QtGui.QDialog, Ui_DialogServerArgs):
 
     @QtCore.pyqtSlot()  # 需要使用装饰器@QtCore.pyqtSlot()，把函数声明为槽函数
     def __DialogAccept(self):
-        print self.TWOper.CDS.getNodes()
+        # print self.TWOper.CDS.getNodes()
         # self.emit(QtCore.SIGNAL("save_data_dict(PyQt_PyObject)"), self.CDS.getNodes())
         self.emit(QtCore.SIGNAL("save_data_dict(PyQt_PyObject)"),self.TWOper.CDS.nodes)
 

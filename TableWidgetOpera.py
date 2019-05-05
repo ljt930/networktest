@@ -139,8 +139,8 @@ class TableWidgetOpera(QtGui.QDialog):
         # item_edit = menu.addAction(u"修改")
         action = menu.exec_(self.parent.mapToGlobal(pos))
 
-        # for i in self.tableWidgetCfgNode.selectionModel().selection().indexes():
-        #     row_num = i.row()
+        for i in WidgetObj.selectionModel().selection().indexes():
+            row_num = i.row()
         #     print row_num
 
         rows = WidgetObj.rowCount()
@@ -155,9 +155,19 @@ class TableWidgetOpera(QtGui.QDialog):
                 self.__initCfgArgTable()
 
         elif action == item_del:
-            WidgetObj.removeRow(rows-1)
+            print u'您选了删除，当前行数是：', row_num
 
-            print u'您选了删除，当前行数是：', rows
+            _name = WidgetObj.item(row_num,0).text()
+            _name = self.CDS.QString2PyString(_name)
+            WidgetObj.removeRow(row_num)
+            if WidgetObj == self.tableWidgetCfgNode:
+                self.__delCfgNode(_name)
+            else:
+                _nodename = self.CDS.QString2PyString(self.nodename)
+                self.__delAgr(_nodename,_name)
+
+
+
         # elif action == item_edit:
         #
         #     print u'您选了修改，当前行内容是：', WidgetObj.item(row_num,0).text()
@@ -184,6 +194,7 @@ class TableWidgetOpera(QtGui.QDialog):
         # self.tableWidgetCfgNode.se
         self.__initCfgArgTable()
         nodenamesqtr= self.tableWidgetCfgNode.currentItem().text()
+        self.nodename = nodenamesqtr
         nodename = self.CDS.QString2PyString(nodenamesqtr)
 
         isexistNode = self.CDS.isexistname(self.tableWidgetCfgNode, nodename)
@@ -192,6 +203,7 @@ class TableWidgetOpera(QtGui.QDialog):
             self.tableWidgetCfgNode.removeRow(row)
             return
         nodes = self.CDS.getNodes()
+
         if nodes.has_key(nodename):
             # print nodes[nodename]
             self.__showItemInTable(nodes,nodename)
@@ -200,7 +212,7 @@ class TableWidgetOpera(QtGui.QDialog):
             # print "NULL"
             if nodename == u"默认值":
                 return
-            ret =self.CDS.createNodes(nodename, True, {})
+            ret = self.CDS.createNodes(nodename, True, {})
             self.msgboxWarning(ret)
 
     @QtCore.pyqtSlot()  # 需要使用装饰器@QtCore.pyqtSlot()，把函数声明为槽函数
@@ -209,9 +221,9 @@ class TableWidgetOpera(QtGui.QDialog):
         item = self.tableWidgetCfgNode.currentItem()
         if item == None:
             return
-        nodename = self.CDS.QString2PyString(self.tableWidgetCfgNode.currentItem().text())
+        nodename = self.CDS.QString2PyString(self.nodename)
         argname = self.tableWidgetCfgArg.currentItem().text()
-        print "slotSelectChangedArg:",argname
+        # print "slotSelectChangedArg:",argname
 
         isexistArg = self.CDS.isexistname(self.tableWidgetCfgArg, argname)
         if isexistArg == 2:
@@ -220,3 +232,11 @@ class TableWidgetOpera(QtGui.QDialog):
 
         ret = self.CDS.createAgrs(self.tableWidgetCfgArg, nodename, True)
         self.msgboxWarning(ret)
+
+    def __delCfgNode(self,nodename):
+        self.CDS.delCfgNode(nodename)
+
+    def __delAgr(self,nodename, argname):
+        self.CDS.delAgr(nodename,argname)
+        nodes = self.CDS.getNodes()
+        # print nodes

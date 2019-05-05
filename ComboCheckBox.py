@@ -10,10 +10,11 @@ from PyQt4.QtGui import QComboBox,QListWidget,QCheckBox,QListWidgetItem,QLineEdi
 from PyQt4 import QtCore
 
 class ComboCheckBox(QComboBox):
-    def __init__(self, items):  # items==[str,str...]
+    def __init__(self, itemdicts):  # items==[str,str...]
         super(ComboCheckBox, self).__init__()
 
-        self.items = items
+        self.itemdict = itemdicts
+        self.items = self.itemdict.keys()
         self.items.insert(0, u'全部')
         self.row_num = len(self.items)
         self.Selectedrow_num = 0
@@ -29,6 +30,7 @@ class ComboCheckBox(QComboBox):
         self.setModel(self.qListWidget.model())
         self.setView(self.qListWidget)
         self.setLineEdit(self.qLineEdit)
+        self.show()
 
         # self.qListWidget.setAlternatingRowColors(True)
         # self.qLineEdit.setAlternatingRowColors(True)
@@ -39,7 +41,11 @@ class ComboCheckBox(QComboBox):
         self.qCheckBox.append(QCheckBox())
         qItem = QListWidgetItem(self.qListWidget)
         self.qCheckBox[i].setText(self.items[i])
+        if i >0 and self.itemdict[self.items[i]] == "1":
+            self.qCheckBox[i].setChecked(True)
         self.qListWidget.setItemWidget(qItem, self.qCheckBox[i])
+
+
 
     def Selectlist(self):
         Outputlist = []

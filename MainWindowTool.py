@@ -109,7 +109,8 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
         self.connect(self.m_pActionSave, QtCore.SIGNAL("triggered()"), self, QtCore.SLOT("__SaveJsonToFile()"))
 
     def __creatServersCfgTable(self):
-        listServerCfg = getServerCfgDict("server.json","records")
+        # listServerCfg = getServerCfgDict("server.json","records")
+        listServerCfg = getServerCfgDict("tt.txt","records")
         # print "ServersTableInit:\n",listServerCfg
         self.Serverrowcount = len(listServerCfg)
 
@@ -117,33 +118,22 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
         r = 0
 
         for ServerCfg in listServerCfg :
-            listnode = ["CommonConfig", "RTDB", "DataBase"]
             self.__creatOneRowInTable(r,True,ServerCfg)
-            self._createComboCheckBox(r,listnode)
-
-
-
-
             r +=1
         # self.tableWidgetServers.item(0, 7).setTextAlignment(QtCore.Qt.AlignCenter)
-
-
-    def _createComboCheckBox(self,r , listnode):
-
-        CCB = ComboCheckBox.ComboCheckBox(listnode)
-        # CCB.initItem(listnode)
-        # CCB.setStyleSheet("background-color:transparent ")
-        self.tableWidgetServers.setCellWidget(r, 11, CCB)
-
 
     def __creatOneRowInTable(self,r ,isloadfile, ServerCfg={}):
         if ServerCfg.has_key("title"):
             self.__creatItemInTable(1, ServerCfg["title"], r)  # 服务名称
+
+            localparamnode = ServerCfg["isEnableLocalParam"]
+            # listnode = localparamnode.keys()
         else:
             if isloadfile :
                 return
             else:
                 self.__creatItemInTable(1, "", r)
+                localparamnode = {}
 
         if ServerCfg.has_key("serviceType"):
             self.__creatItemInTable(0, ServerCfg["serviceType"], r)  # 服务类型
@@ -185,6 +175,7 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
             self.__creatCheckBoxInTable(10, self.CC.StrToBool(ServerCfg["isWaitStartupOK"]), r)  # 不重复启动
         else:
             self.__creatCheckBoxInTable(10, False, r)
+        self._createComboCheckBox(r, localparamnode)
 
     def __creatItemInTable(self, col, text="", row=0):
         item = QtGui.QTableWidgetItem()
@@ -206,7 +197,10 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
         self.tableWidgetServers.setCellWidget(row,col, chekboxwidget)
         if isselect:
             isEnableChekBox.setChecked(isselect)
+    def _createComboCheckBox(self,r , listnode):
 
+        CCB = ComboCheckBox.ComboCheckBox(listnode)
+        self.tableWidgetServers.setCellWidget(r, 11, CCB)
 
 
     @QtCore.pyqtSlot(int,int)  # 需要使用装饰器@QtCore.pyqtSlot()，把函数声明为槽函数
@@ -240,19 +234,22 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
 
     @QtCore.pyqtSlot()
     def __SaveJsonToFile(self):
+        ##保存按钮触发
         rowCount = self.tableWidgetServers.rowCount()
         ServerCfg ={}
         ServerCfgList = []
         fp = open("tt.txt","w")
         header = {"type":"stringTable"}
         for row in range(0,rowCount):
+
             title = self.tableWidgetServers.item(row, 1).text()
             #优先转换title为python string类型
             title = self.CC.QString2PyString(title)
             if title == "":
-                print type(title)
+                # print type(title)
                 continue
             serviceType = self.tableWidgetServers.item(row,0).text()
+
 
             path = self.tableWidgetServers.item(row, 2).text()
             workDir = self.tableWidgetServers.item(row, 3).text()
@@ -276,6 +273,19 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
             ServerCfg["autoStart"] = self.CC.BoolToStr(autoStart)
             ServerCfg["single"] = self.CC.BoolToStr(single)
             ServerCfg["isWaitStartupOK"] = self.CC.BoolToStr(isWaitStartupOK)
+
+            isEnableLocalParam = {}
+            self.LocalParamtext = ""
+            qCheckBoxList = self.tableWidgetServers.cellWidget(row, 11).qCheckBox
+            for qCheckBox in qCheckBoxList:
+                # print qCheckBox.text() + ":" + self.CC.BoolToStr(qCheckBox.isChecked())
+                self.LocalParamtext = self.CC.QString2PyString(qCheckBox.text())
+                if self.LocalParamtext == u"全部":
+                    continue
+                isEnableLocalParam[self.LocalParamtext] = self.CC.BoolToStr(qCheckBox.isChecked())
+            ServerCfg["isEnableLocalParam"] = isEnableLocalParam
+
+
             # print ServerCfg
             # s = jo.jsondumps(ServerCfg, sort_keys=True, indent=4, separators=(',', ': '))
             # print s
@@ -298,19 +308,22 @@ class MainWindowTool(QtGui.QMainWindow, Ui_MainWindowTool):
 
     @QtCore.pyqtSlot()
     def __ExportConfigFile(self):
-        # print self.m_SettingCfgDict
+        # 保存为服务配置文件
         if self.m_SettingCfgDict == "":
             QtGui.QMessageBox.information(self, u"警告", u"数据未保存")
         else:
             import FormatConfig
             FC = FormatConfig.FormatConfig()
-            FC.FormatSettingConfig(self.m_SettingCfgDict,False)
+            localnodelist = self.LocalParamtext.split(";")
+            FC.FormatSettingConfig(self.m_SettingCfgDict,localnodelist)
             pass
 
     @QtCore.pyqtSlot("PyQt_PyObject")
     def __saveCfgData(self,nodes):
         print "in __saveCfgData"
-        serverparm =  jo.jsondumps(nodes, indent=4)
+        serverparm = jo.jsondumps(nodes)
+        # serverparm = str(nodes)
+        # serverparm.replace("\\","")
         self.tableWidgetServers.item(self.selectrow,5).setText(serverparm)
         del serverparm
 
@@ -330,7 +343,8 @@ def getServerCfgDict(file,Node=None):
 if __name__ == '__main__':
     # jo = jsonParserOper.jsonOper()
 
-    jdict = getServerCfgDict("jsonstrBaseStartupParam.json")
+    # jdict = getServerCfgDict("jsonstrBaseStartupParam.json")
+    jdict = getServerCfgDict("tt.txt", "localConfig")
     app = QtGui.QApplication(sys.argv)
     window = MainWindowTool()
     TWOper = TableWidgetOpera.TableWidgetOpera(window.localTab, True, window)

@@ -51,7 +51,7 @@ class FormatConfig():
         self.CC = CharactersConversion.CharactersConversion()
         self.WC = ConfigFileParserOper.WriteConfig()
 
-    def FormatSettingConfig(self,dconfig,types="server",filename="test.ini"):
+    def FormatSettingConfig(self,dconfig,localnodelist,filename="test.ini"):
 
         # print dconfig
         ServerCfgList = dconfig["records"]
@@ -74,7 +74,7 @@ class FormatConfig():
             Command = ServerCfg["path"]
             self.__setOption(i, "Command", Command)
 
-            Params = self.__formatparms(ServerCfg,types,Title,LocalCfgDict)
+            Params = self.__formatparms(ServerCfg,Title,LocalCfgDict,localnodelist)
             self.__setOption(i, "Params", Params)
 
             Workspace = ServerCfg["workDir"]
@@ -96,37 +96,41 @@ class FormatConfig():
             i +=1
         self.WC.set("server", "size", i-1)
         self.WriteConfig(filename) #写文件
-    def __formatparms(self,servercfg,types,Title,localcfg,isConfig=True):
-        localnodelist = ["CommonConfig","RTDB","DataBase"]
+
+    def __formatparms(self,servercfg,Title,localcfg,localnodelist,isConfig=True):
+        # localnodelist = ["CommonConfig","RTDB","DataBase"]
         lparams = {}
         for node in localnodelist:
             # 按列表重新生产需要的本地配置参数
-            lparams[node] = localcfg[node]
-
+            lparams[node] = localcfg.get(node)
+        coding = localcfg.get("RTDB").get("localCoding")
+        if coding == None:
+            coding = "client"
         lparams.update(eval(servercfg["josnStartParam"])) #把服务param更新到本地配置param字典中
+        serType = servercfg["serviceType"]+"Service"
 
         if isConfig: #Params有两种格式，默认配置文件中的格式
-            Params = self.__creatConfigParam(servercfg["serviceType"], types, Title, lparams)
+            Params = self.__creatConfigParam(Title, coding, serType, lparams)
             # _params = json.dumps(lparams, sort_keys=True, indent=4, separators=(',', ': ')) #序列化lparams
             #
             # Params = "\"%s#NEXT#%s#NEXT#%s#NEXT#%s\"" % (servercfg["serviceType"], types, Title, json.dumps(_params)) #拼接字符串，需再次序列化_params
         else:
-            Params =self.__creatSriptParam(servercfg["serviceType"], types, Title, lparams)
+            Params =self.__creatSriptParam(Title, coding, serType, lparams)
         del lparams
 
         return Params
-    def __creatConfigParam(self,serType,types,Title, _params):
+    def __creatConfigParam(self,Title,coding,serType, _params):
         # 序列化lparams
         _params = json.dumps(_params, sort_keys=True, indent=4)
         # 强制不转义\n
         _params = _params.replace("\n",r"\n")
         # 拼接字符串
-        Params = "\"%s#NEXT#%s#NEXT#%s#NEXT#%s\\n\"" % (serType, types, Title, _params)
+        Params = "\"%s#NEXT#%s#NEXT#%s#NEXT#%s\\n\"" % (Title, coding, serType, _params)
         return Params
 
-    def __creatSriptParam(self, serType, types, Title, _params):
+    def __creatSriptParam(self, serType, coding, Title, _params):
         _params = json.dumps(_params)
-        Params = "%s %s %s %s" % (serType, types, Title, json.dumps(_params))
+        Params = "%s %s %s %s" % (Title, coding, serType, json.dumps(_params))
         return Params
 
     def __setOption(self,i , name, value):
@@ -168,12 +172,10 @@ class FormatConfig():
 
 
 if __name__ == '__main__':
+    None.pop("1111")
 
 
-
-
-
-    s = '"RTDBServer#NEXT#client#NEXT#RTDBServerService#NEXT#{\n    "RTDB": {\n        "ip": "127.0.0.1", \n        "localCoding": "client", \n        "localName": "client", \n        "localType": "client", \n        "port": "6379"\n    }, \n    "RTDBServer": {\n        "centerIP": "10.7.3.108", \n        "centerPort": "6379", \n        "localStationNum": "0"\n    }\n}\n"'
+    s = '"localTypeWFServer#NEXT#8C16456F60D20000#NEXT#localTypeWFServerService#NEXT#{\n   \"BigDataTrans\" : {\n      \"ip\" : \"127.0.0.1\",\n      \"port\" : \"18988\"\n   },\n   \"DataBase\" : {\n      \"DBType\" : \"0\",\n      \"DSN\" : \"\",\n      \"IP\" : \"10.7.3.188\",\n      \"JKDB\" : \"GZPW_12_06\",\n      \"Port\" : \"3306\",\n      \"UID\" : \"root\",\n      \"configDB\" : \"GZPW_12_06\",\n      \"driver\" : \"\",\n      \"histroyDB\" : \"GZPW_12_06\",\n      \"psw\" : \"AB214813E07BC2B84F0B7401F98A3781\"\n   },\n   \"WFServer\" : {\n      \"port\" : \"5555\"\n   },\n   \"dataPacket\" : {\n      \"dir\" : \"../DataPacket\"\n   },\n   \"RTDB\" : {\n      \"ip\" : \"127.0.0.1\",\n      \"localCoding\" : \"client\",\n      \"localName\" : \"client\",\n      \"localType\" : \"client\",\n      \"port\" : \"6379\"\n   }\n}"'
 
     P = FormatConfig().ConfigToSript_Arg(s)
     print P

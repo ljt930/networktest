@@ -61,3 +61,12 @@ class CfgDataStorage(object):
             if WidgetObj.item(row,0).text() == name:
                 i+=1
         return i
+
+    def delCfgNode(self,nodename):
+        self.nodes.pop(nodename)
+
+    def delAgr(self,nodename,argname):
+        try:
+            self.nodes.get(nodename).pop(argname)
+        except AttributeError ,e:
+            print e
